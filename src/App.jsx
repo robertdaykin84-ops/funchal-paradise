@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { MapPin, Phone, Clock, ExternalLink, ChevronDown, Menu as MenuIcon, X } from 'lucide-react'
+import { MapPin, Phone, Clock, ExternalLink, ChevronDown, Menu as MenuIcon, X, UtensilsCrossed, Flame, IceCream } from 'lucide-react'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -173,8 +173,13 @@ function MenuStyleA({ data, activeTab, setTab, t }) {
         {items.map((item, i) => (
           <div
             key={item.name}
-            className="flex items-start justify-between gap-5 px-6 py-4"
-            style={{ borderBottom: i < items.length - 1 ? `1px solid ${t.surfaceDark}` : 'none' }}
+            className="flex items-start justify-between gap-5 px-6 py-4 transition-colors duration-150"
+            style={{
+              borderBottom: i < items.length - 1 ? `1px solid ${t.surfaceDark}` : 'none',
+              cursor: 'default',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.background = t.surfaceDark + '50' }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'transparent' }}
           >
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
@@ -190,7 +195,7 @@ function MenuStyleA({ data, activeTab, setTab, t }) {
                   </span>
                 )}
               </div>
-              <p style={{ fontFamily: t.headingFont, fontSize: '0.78rem', color: t.muted, margin: '2px 0 0', lineHeight: 1.55 }}>
+              <p style={{ fontFamily: t.headingFont, fontSize: '0.875rem', color: t.muted, margin: '2px 0 0', lineHeight: 1.55 }}>
                 {item.desc}
               </p>
             </div>
@@ -313,7 +318,11 @@ function MenuStyleB({ data, activeTab, setTab, t }) {
    MENU STYLE C — TAPAS CARDS
    Grid of dish cards, emoji accents, playful
    ═══════════════════════════════════════════════════════════════ */
-const CATEGORY_EMOJI = { starters: '🍽', mains: '🥩', desserts: '🍮' }
+const CATEGORY_ICONS = {
+  starters: ({ color }) => <UtensilsCrossed size={14} style={{ color }} />,
+  mains:    ({ color }) => <Flame size={14} style={{ color }} />,
+  desserts: ({ color }) => <IceCream size={14} style={{ color }} />,
+}
 
 function MenuStyleC({ data, activeTab, setTab, t }) {
   const items = data[activeTab]
@@ -339,7 +348,7 @@ function MenuStyleC({ data, activeTab, setTab, t }) {
               transform: activeTab === tab.id ? 'scale(1.04)' : 'scale(1)',
             }}
           >
-            <span role="img" aria-hidden="true">{CATEGORY_EMOJI[tab.id]}</span>
+            {(() => { const Icon = CATEGORY_ICONS[tab.id]; return <Icon color={activeTab === tab.id ? '#fff' : t.muted} /> })()}
             {tab.label}
           </button>
         ))}
@@ -370,7 +379,7 @@ function MenuStyleC({ data, activeTab, setTab, t }) {
             >
               {item.name}
             </div>
-            <p style={{ fontFamily: t.headingFont, fontSize: '0.78rem', color: t.muted, lineHeight: 1.6, flex: 1, margin: 0 }}>
+            <p style={{ fontFamily: t.headingFont, fontSize: '0.875rem', color: t.muted, lineHeight: 1.6, flex: 1, margin: 0 }}>
               {item.desc}
             </p>
             <div className="flex items-center justify-between mt-2">
@@ -456,7 +465,7 @@ function MenuStyleD({ data, activeTab, setTab, t }) {
                 £{item.price}
               </span>
             </div>
-            <p style={{ fontFamily: t.headingFont, fontSize: '0.78rem', color: CHALK_MUTED, margin: '2px 0 0', lineHeight: 1.55 }}>
+            <p style={{ fontFamily: t.headingFont, fontSize: '0.875rem', color: CHALK_MUTED, margin: '2px 0 0', lineHeight: 1.55 }}>
               {item.desc}
             </p>
             {i < items.length - 1 && (
@@ -471,7 +480,7 @@ function MenuStyleD({ data, activeTab, setTab, t }) {
         className="px-8 py-4 text-center"
         style={{ borderTop: `1px solid ${CHALK_DIVIDER}` }}
       >
-        <p style={{ fontFamily: t.dramaFont, fontStyle: 'italic', fontSize: '0.78rem', color: CHALK_MUTED, margin: 0 }}>
+        <p style={{ fontFamily: t.dramaFont, fontStyle: 'italic', fontSize: '0.875rem', color: CHALK_MUTED, margin: 0 }}>
           All dishes made fresh daily · Allergen info available on request
         </p>
       </div>
@@ -488,14 +497,17 @@ function MenuSection({ t, menuStyle }) {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from('.menu-el', {
-        y: 30,
-        opacity: 0,
-        duration: 0.8,
-        ease: 'power3.out',
-        stagger: 0.12,
-        scrollTrigger: { trigger: ref.current, start: 'top 82%' },
-      })
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      if (!prefersReduced) {
+        gsap.from('.menu-el', {
+          y: 30,
+          opacity: 0,
+          duration: 0.8,
+          ease: 'power3.out',
+          stagger: 0.12,
+          scrollTrigger: { trigger: ref.current, start: 'top 82%' },
+        })
+      }
     }, ref)
     return () => ctx.revert()
   }, [t.key, menuStyle])
@@ -692,14 +704,17 @@ function Hero({ t }) {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from('.hero-el', {
-        y: 40,
-        opacity: 0,
-        duration: 1.1,
-        ease: 'power3.out',
-        stagger: 0.1,
-        delay: 0.2,
-      })
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      if (!prefersReduced) {
+        gsap.from('.hero-el', {
+          y: 40,
+          opacity: 0,
+          duration: 1.1,
+          ease: 'power3.out',
+          stagger: 0.1,
+          delay: 0.2,
+        })
+      }
     }, heroRef)
     return () => ctx.revert()
   }, [t.key])
@@ -716,6 +731,8 @@ function Hero({ t }) {
         alt="Funchal Paradise Restaurant"
         className="absolute inset-0 w-full h-full object-cover"
         style={{ transition: 'opacity 0.8s ease' }}
+        fetchPriority="high"
+        loading="eager"
       />
       <div
         className="absolute inset-0"
@@ -750,11 +767,33 @@ function Hero({ t }) {
           {t.heroLine2}
         </h1>
         <p
-          className="hero-el mb-8"
+          className="hero-el mb-4"
           style={{ fontFamily: t.headingFont, fontSize: 'clamp(0.9rem, 2vw, 1.1rem)', color: 'rgba(255,255,255,0.65)', maxWidth: '520px', lineHeight: 1.6 }}
         >
           {t.tagline}
         </p>
+        <div
+          className="hero-el flex items-center gap-3 mb-8"
+        >
+          <div
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full"
+            style={{
+              background: 'rgba(255,255,255,0.12)',
+              backdropFilter: 'blur(8px)',
+              border: '1px solid rgba(255,255,255,0.2)',
+            }}
+          >
+            <div className="flex items-center gap-0.5">
+              {[1,2,3,4].map(i => (
+                <svg key={i} width="12" height="12" viewBox="0 0 24 24" fill="#34E0A1"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+              ))}
+              <svg width="12" height="12" viewBox="0 0 24 24"><defs><linearGradient id="hg"><stop offset="50%" stopColor="#34E0A1"/><stop offset="50%" stopColor="rgba(255,255,255,0.3)"/></linearGradient></defs><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" fill="url(#hg)"/></svg>
+            </div>
+            <span style={{ fontFamily: t.monoFont, fontSize: '0.72rem', color: 'rgba(255,255,255,0.85)', letterSpacing: '0.05em' }}>
+              4.5 · 315 Reviews · TripAdvisor
+            </span>
+          </div>
+        </div>
         <div className="hero-el flex flex-wrap gap-3">
           <a
             href="https://www.bite.je"
@@ -804,25 +843,28 @@ function Philosophy({ t }) {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      const words = gsap.utils.toArray('.philo-word')
-      gsap.from(words, {
-        y: 30,
-        opacity: 0,
-        duration: 0.6,
-        ease: 'power3.out',
-        stagger: 0.04,
-        scrollTrigger: { trigger: ref.current, start: 'top 70%' },
-      })
-      gsap.to('.philo-texture', {
-        y: '-15%',
-        ease: 'none',
-        scrollTrigger: {
-          trigger: ref.current,
-          start: 'top bottom',
-          end: 'bottom top',
-          scrub: 1,
-        },
-      })
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      if (!prefersReduced) {
+        const words = gsap.utils.toArray('.philo-word')
+        gsap.from(words, {
+          y: 30,
+          opacity: 0,
+          duration: 0.6,
+          ease: 'power3.out',
+          stagger: 0.04,
+          scrollTrigger: { trigger: ref.current, start: 'top 70%' },
+        })
+        gsap.to('.philo-texture', {
+          y: '-15%',
+          ease: 'none',
+          scrollTrigger: {
+            trigger: ref.current,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 1,
+          },
+        })
+      }
     }, ref)
     return () => ctx.revert()
   }, [t.key])
@@ -874,8 +916,8 @@ function Philosophy({ t }) {
           className="mt-16 flex items-center gap-4"
           style={{ borderTop: '1px solid rgba(255,255,255,0.12)', paddingTop: '1.5rem' }}
         >
-          <div className="w-10 h-10 rounded-full flex items-center justify-center text-lg flex-shrink-0" style={{ background: t.accent }}>
-            🍽
+          <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: t.accent }}>
+            <UtensilsCrossed size={18} color="#fff" />
           </div>
           <div>
             <div style={{ fontFamily: t.headingFont, fontWeight: 700, color: '#fff', fontSize: '0.9rem' }}>Tony & Cecilia</div>
@@ -921,28 +963,31 @@ function Protocol({ t }) {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.utils.toArray('.story-panel').forEach((panel) => {
-        const img = panel.querySelector('.story-img')
-        const text = panel.querySelectorAll('.story-text-el')
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      if (!prefersReduced) {
+        gsap.utils.toArray('.story-panel').forEach((panel) => {
+          const img = panel.querySelector('.story-img')
+          const text = panel.querySelectorAll('.story-text-el')
 
-        gsap.fromTo(img,
-          { y: 30, scale: 1.08 },
-          {
-            y: -30,
-            scale: 1,
-            ease: 'none',
-            scrollTrigger: { trigger: panel, start: 'top bottom', end: 'bottom top', scrub: 1.5 },
-          }
-        )
-        gsap.from(text, {
-          y: 40,
-          opacity: 0,
-          duration: 0.85,
-          ease: 'power3.out',
-          stagger: 0.1,
-          scrollTrigger: { trigger: panel, start: 'top 72%' },
+          gsap.fromTo(img,
+            { y: 30, scale: 1.08 },
+            {
+              y: -30,
+              scale: 1,
+              ease: 'none',
+              scrollTrigger: { trigger: panel, start: 'top bottom', end: 'bottom top', scrub: 1.5 },
+            }
+          )
+          gsap.from(text, {
+            y: 40,
+            opacity: 0,
+            duration: 0.85,
+            ease: 'power3.out',
+            stagger: 0.1,
+            scrollTrigger: { trigger: panel, start: 'top 72%' },
+          })
         })
-      })
+      }
     }, sectionRef)
     return () => ctx.revert()
   }, [t.key])
@@ -973,6 +1018,7 @@ function Protocol({ t }) {
                 src={panel.image}
                 alt={panel.imageAlt}
                 style={{ transformOrigin: 'center center' }}
+                loading="lazy"
               />
             </div>
             <div className="flex-1 flex flex-col gap-4">
@@ -1026,14 +1072,17 @@ function OrderCTA({ t }) {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from('.cta-el', {
-        y: 40,
-        opacity: 0,
-        duration: 0.9,
-        ease: 'power3.out',
-        stagger: 0.1,
-        scrollTrigger: { trigger: ref.current, start: 'top 75%' },
-      })
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      if (!prefersReduced) {
+        gsap.from('.cta-el', {
+          y: 40,
+          opacity: 0,
+          duration: 0.9,
+          ease: 'power3.out',
+          stagger: 0.1,
+          scrollTrigger: { trigger: ref.current, start: 'top 75%' },
+        })
+      }
     }, ref)
     return () => ctx.revert()
   }, [t.key])
