@@ -1151,12 +1151,14 @@ function Footer({ t }) {
                 Order collection on bite.je
               </a>
               <a
-                href="https://wa.me/441534630657"
+                href="https://righttable-landing.vercel.app"
+                target="_blank"
+                rel="noreferrer"
                 className="nav-link flex items-center gap-2"
                 style={{ color: 'rgba(255,255,255,0.65)', textDecoration: 'none', fontFamily: t.headingFont, fontSize: '0.85rem' }}
               >
-                <Phone size={14} style={{ color: t.accent }} />
-                WhatsApp to reserve a table
+                <ExternalLink size={14} style={{ color: t.accent }} />
+                Reserve a table via RightTable
               </a>
             </div>
           </div>
