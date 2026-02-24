@@ -1,0 +1,96 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Noise overlay ── */
+#noise-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9998;
+  opacity: 0.045;
+  mix-blend-mode: overlay;
+}
+
+/* ── Smooth theme transitions ── */
+.theme-root {
+  transition: background-color 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              color 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* ── Magnetic button base ── */
+.btn-magnetic {
+  position: relative;
+  overflow: hidden;
+  transform: translateZ(0);
+  transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              box-shadow 0.35s ease;
+}
+.btn-magnetic:hover { transform: scale(1.03); }
+.btn-magnetic:active { transform: scale(0.97); }
+
+/* ── Sliding fill layer inside button ── */
+.btn-fill {
+  position: absolute;
+  inset: 0;
+  transform: translateX(-101%);
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  z-index: 0;
+}
+.btn-magnetic:hover .btn-fill { transform: translateX(0); }
+.btn-magnetic span { position: relative; z-index: 1; }
+
+/* ── Nav link lift ── */
+.nav-link {
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+.nav-link:hover { transform: translateY(-1px); opacity: 0.8; }
+
+/* ── Protocol card stacking container ── */
+.protocol-stack {
+  position: relative;
+}
+
+/* ── Typewriter cursor blink ── */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+.cursor-blink { animation: blink 1s step-end infinite; }
+
+/* ── Pulsing dot ── */
+@keyframes pulse-dot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%       { transform: scale(1.6); opacity: 0.5; }
+}
+.pulse-dot { animation: pulse-dot 1.5s ease-in-out infinite; }
+
+/* ── Rotating motif ── */
+@keyframes slow-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+.slow-spin { animation: slow-spin 20s linear infinite; }
+.slow-spin-rev { animation: slow-spin 28s linear infinite reverse; }
+
+/* ── Waveform ── */
+@keyframes dash-offset {
+  from { stroke-dashoffset: 600; }
+  to   { stroke-dashoffset: 0; }
+}
+.wave-anim { animation: dash-offset 3s linear infinite; }
+
+/* ── System status glow ── */
+@keyframes status-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(34,197,94,0.4); }
+  50%       { box-shadow: 0 0 0 6px rgba(34,197,94,0); }
+}
+.status-glow { animation: status-glow 2s ease infinite; }
+
+/* ── Scroll fade utilities ── */
+.fade-up-init {
+  opacity: 0;
+  transform: translateY(40px);
+}
